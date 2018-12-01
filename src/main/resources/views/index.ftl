@@ -68,7 +68,7 @@
                 <div class="btn-group" id="toolbar" style="margin-top: 15px">
                     <div class="btn-group" style="margin-left: 5px">
                         <button class="btn btn-primary" type="button">
-                            <a href="#" onclick="createMsg();">创建群发</a></button>
+                            <a href="#" onclick="createMsg();">创建群发1213</a></button>
                     </div>
                     <div class="btn-group" style="margin-left: 5px">
                         <button type="button" class="btn btn-success">
