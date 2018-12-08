@@ -8,11 +8,12 @@
     <artifactId>auth-demo</artifactId>
     <version>1.0-SNAPSHOT</version>
     <description>code4fun</description>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <properties>
 
         <java.version>1.8</java.version>
+        <project.name>auth-demo</project.name>
     </properties>
 
     <parent>
@@ -31,6 +32,18 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -92,7 +105,21 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>cn.com.authDemo.AuthDemoBootstrap</mainClass>
+                </configuration>
 
+            </plugin>
+
+
+
+            <!-- war打包插件, 设定war包名称不带版本号 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <warName>${project.name}</warName>
+                </configuration>
             </plugin>
         </plugins>
 
