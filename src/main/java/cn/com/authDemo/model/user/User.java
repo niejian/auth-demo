@@ -19,10 +19,16 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class User {
 
     @Id
-    @Field("userId")
+    @Field("user_id")
     private String id;
-    @Field("userName")
+    @Field("user_name")
     private String userName;
-    @Field("userCode")
+    @Field("user_code")
     private String userCode;
+    @Field("pwd")
+    private String pwd;
+    @Field("state")
+    private boolean state;
+
+
 }

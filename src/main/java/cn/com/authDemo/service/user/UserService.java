@@ -15,4 +15,11 @@ public interface UserService {
     void addUser(User user);
 
     List<User> findUserByUserName(String userName);
+
+    /**
+     * 根据条件获取用户信息
+     * @param user
+     * @return
+     */
+    List<User> getUser(User user);
 }
