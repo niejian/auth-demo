@@ -58,23 +58,36 @@
                                 <input type="text" class="form-control" id="title" style="width: 400px">
                                 <button type="button" style="margin-left:50px" id="btn_query" class="btn btn-primary" onclick="search()">查询
                                 </button>
-                                <button type="button" style="margin-left:50px" id="btn_reset" class="btn btn-default">重置
-                                </button>
+                                <button type="button" style="margin-left:50px" id="btn_reset" class="btn btn-danger">重置sdsd
+                                </button>asas
                             </div>
                         </form>
                     </div>
                 </div>
+
+                <button type="button" class="btn btn-success">
+                    <a href="#" onclick="viewMsg();">查看消息内容sd</a>
+                </button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-success">
+                    <a href="#" onclick="viewMsg();">查看消息内容sd</a>
+                </button>
                 <#--按钮-->
                 <div class="btn-group" id="toolbar" style="margin-top: 15px">
                     <div class="btn-group" style="margin-left: 5px">
                         <button class="btn btn-primary" type="button">
-                            <a href="#" onclick="createMsg();">创建群发</a></button>
-                    </div>
-                    <div class="btn-group" style="margin-left: 5px">
+                            <a href="#" onclick="createMsg();">创建群发
+                            </a></button>
+
                         <button type="button" class="btn btn-success">
-                            <a href="#" onclick="viewMsg();">查看消息内容</a></button>
+                            <a href="#" onclick="viewMsg();">查看消息内容</a>
                         </button>
                     </div>
+
+                        <button type="button" class="btn btn-success">
+                            <a href="#" onclick="viewMsg();">查看消息内容sd</a>
+                        </button>
+
                     <div class="btn-group" style="margin-left: 5px">
                         <button type="button" class="btn btn-info">
                             <a href="#" onclick="view();">查看发送情况</a>
@@ -105,11 +118,22 @@
 
 </section>
 
+<style>
+    a {
+        color: white;
+        cursor: pointer;
+
+    }
+
+
+</style>
+
 <script>
+
     $(function(){
         var time = '${date?string("yyyy-MM-dd HH:mm:ss")}';
         var timestamp = '${timestamp}'
-        layer.alert(time + '--' + timestamp);
+
     });
 
     $('#querylist').bootstrapTable({
