@@ -10,10 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -88,16 +86,9 @@ public class UserController {
                 }
             }
 
+            //用户存在
             if (isContinue && null != user) {
-                user = new User();
-                user.setState(true);
-                user.setPwd(password);
-                user.setUserCode(userName);
-                List<User> users = this.userService.getUser(user);
-                if (CollectionUtils.isEmpty(users)) {
-
-                    responseMsg = "密码错误";
-                }
+                responseMsg = "密码错误";
             }
 
 
@@ -113,5 +104,10 @@ public class UserController {
         CommonFunction.afterProcess(log, response);
 
         return response;
+    }
+
+    @GetMapping(value = "/signup")
+    public ModelAndView signup() {
+        return new ModelAndView("user/signup");
     }
 }

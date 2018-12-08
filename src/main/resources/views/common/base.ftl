@@ -7,4 +7,9 @@
 <script type="text/javascript" src="${ctx}/bootstrap/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="${ctx}/bootstrap/css/bootstrap.min.css">
 <link href="${ctx}/css/font-awesome.min.css" rel="stylesheet">
+
+<script type="text/javascript" src="${ctx}/js/bootstrapValidator/bootstrapValidator.min.js"></script>
+    <script type="text/javascript" src="${ctx}/js/md5.js"></script>
+
+    <link rel="stylesheet" href="${ctx}/js/bootstrapValidator/bootstrapValidator.min.css">
 <#--<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">-->

@@ -3,14 +3,12 @@
 <#include "common/base.ftl">
 <html>
     <head>
-        <script type="text/javascript" src="${ctx}/js/bootstrapValidator/bootstrapValidator.min.js"></script>
-        <script type="text/javascript" src="${ctx}/js/md5.js"></script>
 
-        <link rel="stylesheet" href="${ctx}/js/bootstrapValidator/bootstrapValidator.min.css">
 
     </head>
     <body>
-        <div class="container">
+
+    <div class="container">
             <div class="form row">
                 <div class="form-horizontal col-md-offset-3" id="login_form">
                     <h3 class="form-title">请登录</h3>
@@ -28,9 +26,22 @@
                                 <input type="checkbox" name="remember" value="1"/>记住我
                             </label>
                         </div>
-                        <div class="form-group col-md-offset-9">
-                            <button type="button" class="btn btn-success pull-right" name="submit" id="btn_submit">登录</button>
+
+                        <div class="form-actions">
+                            <div class="row">
+                                <div align="center">
+                                    <button type="button" style="float: left" id="btn_submit" class="btn btn-primary"">
+                                        <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;&nbsp;登录
+                                    </button>
+                                    <button type="button" style="float: right" id="btn_signup" class="btn btn-success">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;&nbsp;注册
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+
+
+                        <br/><br/>
                     </div>
                 </div>
             </div>
@@ -62,6 +73,10 @@
     .fa{display: inline-block;top: 27px;left: 6px;position: relative;color: #ccc;}
     input[type="text"],input[type="password"]{padding-left:26px;}
     .checkbox{padding-left:21px;}
+
+    .form-horizontal .has-feedback .form-control-feedback{
+        padding-top: 20px;
+    }
 
 </style>
 
@@ -161,7 +176,8 @@
 
        });
 
-       $("button[name='submit']").click(function(){
+       //登录
+       $("button[id='btn_submit']").click(function(){
            $("#login_form").bootstrapValidator('validate');//提交验证
            if ($("#login_form").data('bootstrapValidator').isValid()) {//获取验证结果，如果成功，执行下面代码
                var userName = $("#username").val();
@@ -192,6 +208,36 @@
            }
 
 
+
+       });
+
+       //注册
+       $("button[id='btn_signup']").click(function(){
+
+           var url = "${ctx}/user/signup";
+
+           layer.open({
+               id: "user_sign_up",
+               title: "用户注册",
+               type: 2,
+               area: ["50%", "90%"],
+               // closeBtn:true,
+               content: url,
+               success: function(layero, index){
+                   //console.log("add--" + index);
+               },
+               end: function () {
+                   //刷新表格数据
+                   //$('#querylist').bootstrapTable('refresh');
+               },
+               cancel: function (index, layero) {
+                   layer.confirm('关闭后将无法保存已填写的数据，是否确认关闭', function (index2) {
+                       layer.close(index);
+                       layer.close(index2);
+                   });
+                   return false;
+               }
+           });
 
        });
    });
