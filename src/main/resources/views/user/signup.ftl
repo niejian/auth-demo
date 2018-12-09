@@ -14,38 +14,41 @@
                     <!-- BEGIN SAMPLE TABLE PORTLET-->
                     <div class="box-body" style="padding-bottom:0px;">
                         <div class="panel panel-default">
-                            <div class="panel-heading">注册信息</div>
                             <div class="panel-body">
-                                <form id="signup_form" class="form-horizontal">
-                                    <div class="form-inline" style="margin-top:15px; width: 100%">
-                                        <label class="control-label">用户昵称<span style="color: red">*</span></label>
-                                        <input class="form-control required" type="text" style="width: 200px" name="username"/>
+                                <form id="signup_form" class="form-inline" role="form">
+
+                                    <div class="form-group has-feedback" style="margin-top:15px;">
+                                        <input class="form-control required" type="text" placeholder="用户昵称" aria-describedby="basic-addon2" name="username"/>
+
                                     </div>
-                                    <div class="form-inline" style="margin-top:15px; width: 100%">
-                                        <label class="control-label">邮箱<span style="color: red">*</span></label>
-                                        <input class="form-control required" type="text" style="width: 200px" name="email"/>
+
+                                    <div class="form-group" style="margin-top:15px;">
+
+                                        <input class="form-control required" type="text" placeholder="邮箱" name="email"/>
                                     </div>
-                                    <div class="form-inline" style="margin-top:15px; width: 100%">
-                                        <label class="control-label">密码<span style="color: red">*</span></label>
-                                        <input class="form-control required" type="password" style="width: 200px" name="pwd"/>
+                                    <div class="form-group" style="margin-top:15px; ">
+
+                                        <input class="form-control required" type="password" placeholder="密码"  name="pwd"/>
                                     </div>
-                                    <div class="form-inline" style="margin-top:15px; width: 100%">
-                                        <label class="control-label">确认密码<span style="color: red">*</span></label>
-                                        <input class="form-control required" type="password" style="width: 200px" name="confirmpwd"/>
+                                    <div class="form-group" style="margin-top:15px; ">
+                                        <input class="form-control required" type="password" placeholder="确认密码" name="confirmpwd"/>
                                     </div>
-                                </form>
-                                <div class="form-actions">
-                                    <div class="row">
-                                        <div align="center">
-                                            <button type="button" style="margin-left:50px" id="btn_submit" class="btn btn-success"">
-                                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;&nbsp;确定
-                                            </button>
-                                            <button type="button" style="margin-left:50px" id="btn_cancel" class="btn btn-warning">
-                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>&nbsp;&nbsp;取消
-                                            </button>
+
+                                    <div class="form-actions">
+                                        <div class="row">
+                                            <div align="center">
+                                                <button type="button" style="margin-left:50px" id="btn_submit" class="btn btn-success"">
+                                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;&nbsp;确定
+                                                </button>
+                                                <button type="button" style="margin-left:50px" id="btn_cancel" class="btn btn-warning">
+                                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>&nbsp;&nbsp;取消
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+
+                                </form>
+
                             </div>
                         </div>
                     </div>
@@ -56,6 +59,43 @@
 
 
 <style>
+    #signup_form div{
+        display: block;
+    }
+    /*#signup_form label{*/
+        /*padding-left: 50px;*/
+        /*float: left;*/
+    /*}*/
+
+    /*#signup_form input{*/
+        /*padding-left: 50px;*/
+        /*float: left;*/
+    /*}*/
+
+    /*padding-left:60px   因为图标是有一个宽度，然后图标有一个left:20px   图标的宽度34px， 估计一下  设置差不多60px， 刚好让文字不被图标遮挡*/
+    /*.form-center .username input,.form-center .password input{*/
+        /*height: 50px;*/
+        /*padding-left: 60px;*/
+    /*}*/
+
+
+    /*.form-control-feedback {*/
+        /*line-height: 50px;*/
+        /*left: 20px;*/
+    /*}*/
+    .fa{
+        display: inline-block;
+        top: 27px;
+        left: 10px;
+        position: relative;
+        color: #ccc;
+    }
+
+    .form-horizontal .has-feedback .form-control-feedback{
+        padding-top: 20px;
+    }
+
+
 
 </style>
 <script>
@@ -149,9 +189,54 @@
         $("button[id='btn_submit']").click(function(){
             $("#signup_form").bootstrapValidator('validate');//提交验证
             if ($("#signup_form").data('bootstrapValidator').isValid()) {
+                var userName = $("input[name='username']").val();
+                var email = $("input[name='email']").val();
+                var pwd = $("input[name='pwd']").val();
+                var confirmpwd = $("input[name='confirmpwd']").val();
+                if (!isNull(pwd) && !isNull(confirmpwd)
+                && pwd != confirmpwd) {
+                    layer.alert("两次输入的密码不一致");
+                    return false;
+
+                }
+
+                var json = JSON.stringify({userName: userName, email : email, pwd: md5(pwd)});
+                $.ajax({
+                    type: "POST",
+                    url: "${ctx}/user/signup",
+                    contentType: "application/json; charset=utf-8",
+                    data: json,
+                    dataType: "json",
+                    success: function (data) {
+                        var responseCode = data.responseCode;
+                        var responseMsg = data.responseMsg;
+                        var isSuccess = data.isSuccess;
+                        if (isSuccess && responseCode == 0) {
+                            layer.alert("注册成功!", function(){
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.isSignUp("1");
+                                parent.layer.close(index);
+                                //请求成功
+                                window.location.href = "${ctx}/index";
+                            })
+
+                        } else {
+                            layer.alert(responseMsg);
+                        }
+                    },
+                    error: function (message) {
+                        $("#request-process-patent").html("提交数据失败！");
+                    }
+                });
 
             }
         });
+    });
+
+    $("#btn_cancel").click(function(){
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.isSignUp("-1");
+        parent.layer.close(index);
     });
 </script>
 

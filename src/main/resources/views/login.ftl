@@ -15,11 +15,11 @@
                     <div class="col-md-9">
                         <div class="form-group">
                             <i class="fa fa-user fa-lg"></i>
-                            <input class="form-control required" type="text" placeholder="Username" id="username" name="username" autofocus="autofocus" maxlength="20"/>
+                            <input class="form-control required" type="text" placeholder="登录邮箱" id="username" name="username" autofocus="autofocus" maxlength="30"/>
                         </div>
                         <div class="form-group">
                             <i class="fa fa-lock fa-lg"></i>
-                            <input class="form-control required" type="password" placeholder="Password" id="password" name="password"/>
+                            <input class="form-control required" type="password" placeholder="登录密码" id="password" name="password"/>
                         </div>
                         <div class="form-group">
                             <label class="checkbox">
@@ -46,6 +46,8 @@
                 </div>
             </div>
         </div>
+
+    <input type="hidden" id="signup">
 
     </body>
 <style>
@@ -102,18 +104,18 @@
                        notEmpty: {//检测非空,radio也可用
                            message: '请输入用户名'
                        },
-                       stringLength: {
-                           min: 4,
-                           max: 8,
-                           message: '用户名长度为4-8位'
-                       },
-                       regexp: {//正则验证
-                           regexp: /^[a-zA-Z0-9_\.]+$/,
-                           message: '用户名不符要求'
-                       }
-                       // emailAddress: {//验证email地址
-                       //     message: '不是正确的email地址'
+                       // stringLength: {
+                       //     min: 4,
+                       //     max: 8,
+                       //     message: '用户名长度为4-8位'
                        // },
+                       // regexp: {//正则验证
+                       //     regexp: /^[a-zA-Z0-9_\.]+$/,
+                       //     message: '用户名不符要求'
+                       // }
+                       emailAddress: {//验证email地址
+                           message: '不是正确的email地址'
+                       },
                    }
                },
                password:{
@@ -221,7 +223,7 @@
                title: "用户注册",
                type: 2,
                area: ["50%", "90%"],
-               // closeBtn:true,
+               closeBtn:true,
                content: url,
                success: function(layero, index){
                    //console.log("add--" + index);
@@ -229,6 +231,11 @@
                end: function () {
                    //刷新表格数据
                    //$('#querylist').bootstrapTable('refresh');
+                   var isSignup = $("#signup").val();
+                   if ("1" == isSignup){
+                       $("#signup").val("-1")
+                       window.location.href = "${ctx}/index";
+                   }
                },
                cancel: function (index, layero) {
                    layer.confirm('关闭后将无法保存已填写的数据，是否确认关闭', function (index2) {
@@ -241,5 +248,10 @@
 
        });
    });
+
+   function isSignUp(flag) {
+       $("#signup").val(flag);
+
+   }
 </script>
 </html>

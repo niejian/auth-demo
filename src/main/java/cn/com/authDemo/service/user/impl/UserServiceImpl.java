@@ -81,6 +81,11 @@ public class UserServiceImpl implements UserService {
             query.addCriteria(Criteria.where("pwd").is(password));
         }
 
+        String emial = user.getEmail();
+        if (!StringUtils.isEmpty(emial)) {
+            query.addCriteria(Criteria.where("email").is(emial));
+        }
+
         List<User> users = this.mongoTemplate.find(query, User.class);
         return users;
     }

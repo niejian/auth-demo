@@ -29,6 +29,8 @@ public class User {
     private String pwd;
     @Field("state")
     private boolean state;
+    @Field("email")
+    private String email;
 
 
 }
