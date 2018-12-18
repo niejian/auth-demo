@@ -64,6 +64,8 @@ public class UserController {
                 user.setPwd(password);
                 user.setEmail(userName);
                 List<User> users = this.userService.getUser(user);
+                String token = this.userService.login(userName, password);
+                log.info("---->token:{}", token );
                 if (!CollectionUtils.isEmpty(users)) {
                     user = users.get(0);
                     request.getSession().setAttribute("user", user);

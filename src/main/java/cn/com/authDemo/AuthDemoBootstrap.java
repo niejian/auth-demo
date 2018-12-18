@@ -5,7 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.ServletContextApplicationContextInitializer;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
 /**
@@ -15,6 +17,9 @@ import org.springframework.web.context.ConfigurableWebApplicationContext;
  */
 @EnableAsync
 @SpringBootApplication
+@ComponentScan(basePackageClasses = {
+        AuthenticationManager.class
+})
 public class AuthDemoBootstrap extends SpringBootServletInitializer {
 
     /**

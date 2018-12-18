@@ -2,7 +2,9 @@ package cn.com.authDemo.test.user;/**
  * Created by niejian on 2018/12/1.
  */
 
+import cn.com.authDemo.model.user.Role;
 import cn.com.authDemo.model.user.User;
+import cn.com.authDemo.model.user.UserRole;
 import cn.com.authDemo.service.user.UserService;
 import cn.com.authDemo.util.SnowflakeIdWorker;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +30,13 @@ import java.util.List;
 public class UserServiceTest {
     @Autowired
     private UserService userService;
+    SnowflakeIdWorker snowflakeIdWorker = new SnowflakeIdWorker(0, 0);
+
 
     @Ignore
     @Test
-    public void testAddUser(){
+    public void testAddUser() throws Exception{
 
-        SnowflakeIdWorker snowflakeIdWorker = new SnowflakeIdWorker(0, 0);
         User user = new User();
         user.setId(snowflakeIdWorker.nextId() + "");
         user.setUserCode("80468295");
@@ -48,13 +51,49 @@ public class UserServiceTest {
 
     @Ignore
     @Test
-    public void testFindUserByUserName() {
+    public void testFindUserByUserName() throws Exception{
         //String userName = "Mike";
         String userName = "83632156835841";
-        List<User> users = this.userService.findUserByUserName(userName);
+        User user = this.userService.findUserByUserId(userName);
         log.info("----------------------------------------");
-        log.info("查询结果：{}", users.toString());
+        log.info("查询结果：{}", user.toString());
         log.info("----------------------------------------");
+
+    }
+
+    //2857853127753728
+    @Ignore
+    @Test
+    public void testAddUserRole() throws Exception{
+        Role role = new Role();
+        String roleId = snowflakeIdWorker.nextId() + "";
+        String roleCode = "ROLE_PC_1";
+        String roleName = "PC_1";
+        String roleDesc = "pc1";
+        role.setRoleCode(roleCode);
+        role.setRoleName(roleName);
+        role.setRoleId(roleId);
+        role.setRoleDesc(roleDesc);
+
+        this.userService.addRole(role);
+        String userId = "28578531277537281";
+        UserRole userRole = new UserRole();
+        userRole.setId(snowflakeIdWorker.nextId() + "");
+        userRole.setRoleId(roleId);
+        userRole.setUserId(userId);
+
+        this.userService.addUserRole(userRole);
+
+    }
+
+    @Ignore
+    @Test
+    public void getRoleInfo()  throws Exception{
+        String userId = "2857853127753728";
+        List<UserRole> userRoles = this.userService.getUserRoleByUserId(userId);
+        log.info("==================");
+        log.info("查询的角色信息：{}", userRoles.toString());
+        log.info("==================");
 
     }
 
