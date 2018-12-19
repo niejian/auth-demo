@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.DigestUtils;
 
@@ -33,14 +34,18 @@ public class UserServiceTest {
     SnowflakeIdWorker snowflakeIdWorker = new SnowflakeIdWorker(0, 0);
 
 
-    @Ignore
+    //@Ignore
     @Test
     public void testAddUser() throws Exception{
 
         User user = new User();
         user.setId(snowflakeIdWorker.nextId() + "");
         user.setUserCode("80468295");
-        String pwd = DigestUtils.md5DigestAsHex("12345678".getBytes());
+        user.setEmail("80468295");
+
+        //String pwd = DigestUtils.md5DigestAsHex("12345678".getBytes());
+        String pwd = "12345678";
+
         user.setUserName("Mike");
         //userService.addUser(user);
         user.setPwd(pwd);
@@ -67,7 +72,7 @@ public class UserServiceTest {
     public void testAddUserRole() throws Exception{
         Role role = new Role();
         String roleId = snowflakeIdWorker.nextId() + "";
-        String roleCode = "ROLE_PC_1";
+        String roleCode = "ROLE_ADMIN";
         String roleName = "PC_1";
         String roleDesc = "pc1";
         role.setRoleCode(roleCode);
@@ -76,7 +81,7 @@ public class UserServiceTest {
         role.setRoleDesc(roleDesc);
 
         this.userService.addRole(role);
-        String userId = "28578531277537281";
+        String userId = "2857853127753728";
         UserRole userRole = new UserRole();
         userRole.setId(snowflakeIdWorker.nextId() + "");
         userRole.setRoleId(roleId);
@@ -84,6 +89,14 @@ public class UserServiceTest {
 
         this.userService.addUserRole(userRole);
 
+
+    }
+
+    @Test
+    public void testPwd() {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String pwd = bCryptPasswordEncoder.encode("4266bf8d3dc65bc84fd3badf2edfdbe7");
+        System.out.println(pwd);
     }
 
     @Ignore

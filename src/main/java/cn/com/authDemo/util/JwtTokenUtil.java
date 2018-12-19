@@ -22,7 +22,11 @@ public class JwtTokenUtil implements Serializable {
     /**
      * 密钥
      */
-    private final String secret = "aaaaaaaa";
+    private final String secret = "code4fun";
+
+    final static Long TIMESTAMP = 86400000L;
+    final static String TOKEN_PREFIX = "Bearer";
+
 
     /**
      * 从数据声明生成令牌
@@ -31,8 +35,8 @@ public class JwtTokenUtil implements Serializable {
      * @return 令牌
      */
     private String generateToken(Map<String, Object> claims) {
-        Date expirationDate = new Date(System.currentTimeMillis() + 2592000L * 1000);
-        return Jwts.builder().setClaims(claims).setExpiration(expirationDate).signWith(SignatureAlgorithm.HS512, secret).compact();
+        Date expirationDate = new Date(System.currentTimeMillis() + TIMESTAMP);
+        return TOKEN_PREFIX + " " +Jwts.builder().setClaims(claims).setExpiration(expirationDate).signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
     /**

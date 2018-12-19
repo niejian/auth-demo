@@ -1,6 +1,7 @@
 package cn.com.authDemo.controller;
 
 import cn.com.authDemo.common.BaseResponse;
+import cn.com.authDemo.common.BaseResponseExt;
 import cn.com.authDemo.common.CommonFunction;
 import cn.com.authDemo.model.user.User;
 import cn.com.authDemo.service.user.UserService;
@@ -8,6 +9,8 @@ import cn.com.authDemo.util.SnowflakeIdWorker;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -33,13 +36,15 @@ public class UserController {
 
     @ResponseBody
     @PostMapping(value = "/login")
-    public BaseResponse login(@RequestBody JSONObject jsonObject, HttpServletRequest request) {
+    public BaseResponseExt login(@RequestBody JSONObject jsonObject, HttpServletRequest request) {
         BaseResponse response = new BaseResponse();
+        BaseResponseExt baseResponseExt = new BaseResponseExt();
         Boolean isSuccess = false;
         String responseMsg = "请求失败";
         Integer responseCode = -1;
         CommonFunction.beforeProcess(log, jsonObject);
         boolean isContinue = true;
+        String token = "";
 
         try {
             String userName = jsonObject.has("userName") ? jsonObject.getString("userName") : "";
@@ -63,42 +68,40 @@ public class UserController {
                 user.setState(true);
                 user.setPwd(password);
                 user.setEmail(userName);
-                List<User> users = this.userService.getUser(user);
-                String token = this.userService.login(userName, password);
-                log.info("---->token:{}", token );
-                if (!CollectionUtils.isEmpty(users)) {
-                    user = users.get(0);
-                    request.getSession().setAttribute("user", user);
-                    isSuccess = true;
-                    responseMsg = "请求成功";
-                    responseCode = 0;
-                    isContinue = false;
-                } else {
+                //List<User> users = this.userService.getUser(user);
+                token = this.userService.login(userName, password);
+                isSuccess = true;
+                responseCode = 0;
+                responseMsg = "请求成功";
 
 
-                }
             }
 
-            //判断userCode是否存在
-            if (isContinue && null != user) {
-                user = new User();
-                user.setState(true);
-                //user.setPwd(password);
-                user.setEmail(userName);
-                List<User> users = this.userService.getUser(user);
-                if (CollectionUtils.isEmpty(users)) {
-                    isContinue = false;
-                    responseMsg = "用户名不存在";
-                }
-            }
-
-            //用户存在
-            if (isContinue && null != user) {
-                responseMsg = "密码错误";
-            }
+//            //判断userCode是否存在
+//            if (isContinue && null != user) {
+//                user = new User();
+//                user.setState(true);
+//                //user.setPwd(password);
+//                user.setEmail(userName);
+//                List<User> users = this.userService.getUser(user);
+//                if (CollectionUtils.isEmpty(users)) {
+//                    isContinue = false;
+//                    responseMsg = "用户名不存在";
+//                }
+//            }
+//
+//            //用户存在
+//            if (isContinue && null != user) {
+//                responseMsg = "密码错误";
+//            }
 
 
         } catch (Exception e) {
+            if (e instanceof BadCredentialsException) {
+                responseMsg = "密码错误";
+            } else if (e instanceof UsernameNotFoundException) {
+                responseMsg = "账号不存在";
+            }
             CommonFunction.genErrorMessage(log, e);
             e.printStackTrace();
         }
@@ -107,9 +110,12 @@ public class UserController {
         response.setIsSuccess(isSuccess);
         response.setResponseCode(responseCode);
         response.setResponseMsg(responseMsg);
+        baseResponseExt.setBaseResponse(response);
+        baseResponseExt.setData(token);
+
         CommonFunction.afterProcess(log, response);
 
-        return response;
+        return baseResponseExt;
     }
 
     @GetMapping(value = "/signup")

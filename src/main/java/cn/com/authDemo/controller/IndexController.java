@@ -16,11 +16,11 @@ import java.util.Map;
 @RequestMapping("/")
 public class IndexController {
 
-    @RequestMapping("")
-    public ModelAndView root() {
-        ModelAndView modelAndView = new ModelAndView("login");
-        return modelAndView;
-    }
+//    @RequestMapping("")
+//    public ModelAndView root() {
+//        ModelAndView modelAndView = new ModelAndView("login");
+//        return modelAndView;
+//    }
 
 
     @RequestMapping("/login")

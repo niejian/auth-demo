@@ -49,6 +49,7 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
             userList = this.userService.getUser(queryUser);
 
             if (CollectionUtils.isEmpty(userList)) {
+                //return new JwtUser(username, queryUser.getPwd(), authorities);
                 throw new UsernameNotFoundException("用户账号：" + username + "，不存在");
             } else {
                 queryUser = userList.get(0);

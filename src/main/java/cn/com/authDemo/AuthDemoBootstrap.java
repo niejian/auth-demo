@@ -17,9 +17,7 @@ import org.springframework.web.context.ConfigurableWebApplicationContext;
  */
 @EnableAsync
 @SpringBootApplication
-@ComponentScan(basePackageClasses = {
-        AuthenticationManager.class
-})
+
 public class AuthDemoBootstrap extends SpringBootServletInitializer {
 
     /**

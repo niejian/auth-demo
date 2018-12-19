@@ -18,6 +18,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -42,6 +44,9 @@ public class UserServiceImpl implements UserService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtUserDetailsServiceImpl userDetailsService;
+
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     /**
      * 添加用户信息
      *
@@ -50,6 +55,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addUser(User user)  throws Exception{
         log.info("插入数据表：user，信息：{}", user.toString());
+        String pwd = user.getPwd();
+        if (!StringUtils.isEmpty(pwd)) {
+            pwd = passwordEncoder.encode(pwd);
+            user.setPwd(pwd);
+
+        }
         mongoTemplate.insert(user, "user");
 
     }
@@ -121,6 +132,7 @@ public class UserServiceImpl implements UserService {
 
         String password = user.getPwd();
         if (!StringUtils.isEmpty(password)) {
+            password = passwordEncoder.encode(password);
             query.addCriteria(Criteria.where("pwd").is(password));
         }
 
@@ -171,7 +183,7 @@ public class UserServiceImpl implements UserService {
             userRoles.forEach(userRole -> {
                 roleIdList.add(userRole.getRoleId());
             });
-            Query query = new Query(Criteria.where("id").in(roleIdList));
+            Query query = new Query(Criteria.where("_id").in(roleIdList));
             roles = mongoTemplate.find(query, Role.class);
         }
 

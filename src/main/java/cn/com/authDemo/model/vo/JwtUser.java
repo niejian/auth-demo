@@ -16,12 +16,12 @@ import java.util.Collection;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class JwtUser implements UserDetails {
 
-    private String userName;
+    private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public JwtUser(String userName, String password, Collection<? extends GrantedAuthority> authorities) {
-        this.userName = userName;
+    public JwtUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+        this.username = username;
         this.password = password;
         this.authorities = authorities;
     }
@@ -33,7 +33,7 @@ public class JwtUser implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.authorities;
     }
 
     /**
@@ -43,7 +43,7 @@ public class JwtUser implements UserDetails {
      */
     @Override
     public String getPassword() {
-        return null;
+        return this.password;
     }
 
     /**
@@ -53,7 +53,7 @@ public class JwtUser implements UserDetails {
      */
     @Override
     public String getUsername() {
-        return null;
+        return this.username;
     }
 
     /**
@@ -65,7 +65,7 @@ public class JwtUser implements UserDetails {
      */
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     /**
@@ -76,7 +76,7 @@ public class JwtUser implements UserDetails {
      */
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     /**
@@ -88,7 +88,7 @@ public class JwtUser implements UserDetails {
      */
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     /**
@@ -99,6 +99,6 @@ public class JwtUser implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
