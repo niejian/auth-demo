@@ -385,6 +385,38 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
   
 ```
+### 3.4 用户验证过程
+```java
+UsernamePasswordAuthenticationToken
+authenticationManager.authenticate(upToken);
+//通过这个创建一个代理（ProviderManager）对象
+delegate = this.delegateBuilder.getObject();
+//调用代理对象的认证方法
+delegate.authenticate(authentication)
+	1.代理对象调用父类的 parent.authenticate(authentication);认证方法
+		1.进到parent.authenticate方法，去定ProvideManager的具体类型是DaoProviderManager
+	2.provider.authenticate(authentication);	//此时的provider是DaoProviderManager
+		1.判断参数authentication是不是UsernamePasswordAuthenticationToken类型；不是则跑出异常
+		2.取出唯一标识字段username
+			1.判断userCache是否包含user缓存
+				1.不在缓存中，创建user对象并存放到缓存中
+					//调用这个方法转换成user对象
+					1.user = retrieveUser(username,
+						(UsernamePasswordAuthenticationToken) authentication);
+						//调用用户自定义实现了UserDetailService的方法来获得user对象
+						1.UserDetails loadedUser = this.getUserDetailsService().loadUserByUsername(username);
+				2.preAuthenticationChecks.check(user);
+					1.preAuthenticationChecks.check校验上一部返回的user对象的属性，只要用户实现的userDetail的get，set方法赋上值就好了
+				  additionalAuthenticationChecks(user,
+					(UsernamePasswordAuthenticationToken) authentication);
+					  1.uthentication.getCredentials() == null判断密码是不是为空
+					  2.presentedPassword = authentication.getCredentials().toString(); 获取页面传递过来的密码
+					  3.passwordEncoder.matches(presentedPassword, userDetails.getPassword())判断页面上传递过来的密码跟数据库中的密码是不是一致。
+					  	 1.调用BCrypt.checkpw(rawPassword.toString(), encodedPassword)比对
+					  	 		1.调用 hashpw 来加密页面传递过来的密码信息。然后与数据库中的密码比对。如果相同则返回成功，不同则报错
+
+
+```
 
 
 
