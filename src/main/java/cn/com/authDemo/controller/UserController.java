@@ -9,7 +9,10 @@ import cn.com.authDemo.util.SnowflakeIdWorker;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -116,6 +121,31 @@ public class UserController {
         CommonFunction.afterProcess(log, response);
 
         return baseResponseExt;
+    }
+
+    /**
+     * 显示调用
+     *获取所有权信息
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/getAuths")
+    public List<String> getAuths() {
+        List<String> auths = new ArrayList<>();
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        authorities.forEach(auth -> {
+            auths.add(auth.getAuthority());
+        });
+        return auths;
+
+    }
+
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ResponseBody
+    @GetMapping("/getAuths2")
+    public String getAuths2() {
+        return "admin";
     }
 
     @GetMapping(value = "/signup")

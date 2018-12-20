@@ -41,10 +41,10 @@ public class UserServiceTest {
         User user = new User();
         user.setId(snowflakeIdWorker.nextId() + "");
         user.setUserCode("80468295");
-        user.setEmail("80468295");
+        user.setEmail("80468295@qq.com");
 
-        //String pwd = DigestUtils.md5DigestAsHex("12345678".getBytes());
-        String pwd = "12345678";
+        String pwd = DigestUtils.md5DigestAsHex("12345678".getBytes());
+        //String pwd = "12345678";
 
         user.setUserName("Mike");
         //userService.addUser(user);

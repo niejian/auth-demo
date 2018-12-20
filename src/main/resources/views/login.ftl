@@ -193,10 +193,13 @@
                    data: postJSON,
                    dataType: "json",
                    success: function (data) {
-                       var responseCode = data.responseCode;
-                       var responseMsg = data.responseMsg;
-                       var isSuccess = data.isSuccess;
+                       var baseResponse = data.baseResponse
+                       var responseCode = baseResponse.responseCode;
+                       var responseMsg = baseResponse.responseMsg;
+                       var isSuccess = baseResponse.isSuccess;
                        if (isSuccess && responseCode == 0) {
+                           window.localStorage.setItem(userName + 'acc_token', JSON.stringify({token: data.token}))
+
                            //请求成功
                            window.location.href = "${ctx}/index";
                        } else {
