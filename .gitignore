@@ -1,4 +1,5 @@
-
+rebel.xml
+rebel-*.xml
 target/
 .idea/
 auth-demo.iml

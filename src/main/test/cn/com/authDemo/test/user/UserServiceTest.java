@@ -34,7 +34,7 @@ public class UserServiceTest {
     SnowflakeIdWorker snowflakeIdWorker = new SnowflakeIdWorker(0, 0);
 
 
-    //@Ignore
+    @Ignore
     @Test
     public void testAddUser() throws Exception{
 
@@ -67,7 +67,7 @@ public class UserServiceTest {
     }
 
     //2857853127753728
-    @Ignore
+    //@Ignore
     @Test
     public void testAddUserRole() throws Exception{
         Role role = new Role();
@@ -81,7 +81,7 @@ public class UserServiceTest {
         role.setRoleDesc(roleDesc);
 
         this.userService.addRole(role);
-        String userId = "2857853127753728";
+        String userId = "7092653464223744";
         UserRole userRole = new UserRole();
         userRole.setId(snowflakeIdWorker.nextId() + "");
         userRole.setRoleId(roleId);

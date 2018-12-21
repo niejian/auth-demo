@@ -75,6 +75,9 @@ public class UserController {
                 user.setEmail(userName);
                 //List<User> users = this.userService.getUser(user);
                 token = this.userService.login(userName, password);
+                log.info("token生成---->{}", token);
+                log.info("token生成---->{}", token);
+                log.info("token生成---->{}", token);
                 isSuccess = true;
                 responseCode = 0;
                 responseMsg = "请求成功";
