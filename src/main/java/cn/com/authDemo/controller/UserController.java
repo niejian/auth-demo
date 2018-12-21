@@ -28,7 +28,10 @@ import java.util.List;
 /**
  * @author: nj
  * @date: 2018/12/8:下午4:08
+ *
+ *
  */
+@CrossOrigin
 @Slf4j
 @Controller
 @RequestMapping(value = "/user")
