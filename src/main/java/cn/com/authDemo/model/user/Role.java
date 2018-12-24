@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Document(collection = "role")
 public class Role  implements Serializable {
     @Id
-    @Field("did")
+    @Field("id")
     private String roleId;
     @Field("role_code")
     private String roleCode;

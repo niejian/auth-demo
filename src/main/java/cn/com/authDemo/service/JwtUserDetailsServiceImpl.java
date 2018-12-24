@@ -66,6 +66,6 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
         }
 
 
-        return null;
+        return new JwtUser(null, null, null);
     }
 }

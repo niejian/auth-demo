@@ -2,9 +2,11 @@ package cn.com.authDemo.test.user;/**
  * Created by niejian on 2018/12/1.
  */
 
+import cn.com.authDemo.model.user.Menu;
 import cn.com.authDemo.model.user.Role;
 import cn.com.authDemo.model.user.User;
 import cn.com.authDemo.model.user.UserRole;
+import cn.com.authDemo.service.common.MongoCommonService;
 import cn.com.authDemo.service.user.UserService;
 import cn.com.authDemo.util.SnowflakeIdWorker;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.DigestUtils;
@@ -32,8 +35,10 @@ public class UserServiceTest {
     @Autowired
     private UserService userService;
     SnowflakeIdWorker snowflakeIdWorker = new SnowflakeIdWorker(0, 0);
-
-
+    @Autowired
+    private MongoCommonService mongoCommonService;
+    @Autowired
+    private MongoTemplate mongoTemplate;
     @Ignore
     @Test
     public void testAddUser() throws Exception{
@@ -108,6 +113,12 @@ public class UserServiceTest {
         log.info("查询的角色信息：{}", userRoles.toString());
         log.info("==================");
 
+    }
+
+    @Test
+    public void addMenu() throws Exception{
+        Menu menu = (Menu)mongoCommonService.getEntityByPrimarykey(Menu.class, "menuId", "124", "menu");
+        System.out.println(menu.toString());
     }
 
 }
