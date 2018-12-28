@@ -10,6 +10,7 @@ import cn.com.authDemo.service.common.MongoCommonService;
 import cn.com.authDemo.service.user.UserService;
 import cn.com.authDemo.util.SnowflakeIdWorker;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import org.apache.tomcat.util.security.MD5Encoder;
@@ -28,6 +29,9 @@ import org.springframework.util.DigestUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author niejian
@@ -44,6 +48,9 @@ public class UserServiceTest {
     private MongoCommonService mongoCommonService;
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
     @Ignore
     @Test
     public void testAddUser() throws Exception{
@@ -132,10 +139,56 @@ public class UserServiceTest {
 
     }
 
+    @Ignore
     @Test
     public void addMenu() throws Exception{
         Menu menu = (Menu)mongoCommonService.getEntityByPrimarykey(Menu.class, "menuId", "124", "menu");
         System.out.println(menu.toString());
     }
 
+    /**
+     * 模拟并发从队列中取值
+     * @throws Exception
+     */
+    @Ignore
+    @Test
+    public void testGetMsg() throws Exception{
+        ExecutorService service = Executors.newCachedThreadPool(); //创建一个线程池
+        final CountDownLatch beginCountDownLatch = new CountDownLatch(1);
+        final CountDownLatch countDownLatch = new CountDownLatch(100);
+
+        for (int i = 0; i < 100; i++) {
+            Runnable runnable = new Runnable() {
+                int index = 1;
+                @Override
+                public void run() {
+                    try {
+                        /**
+                         *如果调用对象上的await()方法，那么调用者就会一直阻塞在这里，直到别人通过cutDown方法，将计数减到0，才可以继续执行。
+                         * 这里先调用beginCountDownLatch的await方法，等到循环结束后，内存中就有100个线程等待去运行。
+                         * 所以等到beginCountDownLatch调用countDown的时候，100个线程就开始执行
+                         */
+                        beginCountDownLatch.await();
+                        log.info("------->index:{}", index);
+                        String data = (String) amqpTemplate.receiveAndConvert("demo-test");
+                        log.info("==============>消息n内容：{}", data);
+
+                        countDownLatch.countDown();
+                        index++;
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            };
+            service.execute(runnable);
+        }
+        //释放主线程，之前声明的100个线程就开始执行
+        beginCountDownLatch.countDown();
+        //
+        countDownLatch.await();
+
+    }
 }

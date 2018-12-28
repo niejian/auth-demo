@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TopicReceiver {
 
-    @RabbitListener(queues = "topicQueue")
+//    @RabbitListener(queues = "topicQueue")
     public void process(String msg) {
         log.info("-------");
         log.info("1111接收topic信息：{}", msg);
@@ -22,7 +22,7 @@ public class TopicReceiver {
 
     }
 
-    @RabbitListener(queues = "topicQueue")
+//    @RabbitListener(queues = "topicQueue")
     public void process2(String msg) {
         log.info("-------");
         log.info("2222接收topic信息：{}", msg);

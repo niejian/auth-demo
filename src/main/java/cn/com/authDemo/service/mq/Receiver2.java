@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class Receiver2 {
-    @RabbitListener(queues = "cn.com.test")
+//    @RabbitListener(queues = "cn.com.test")
     public void getMsg(String msg) {
         log.info("通配符获取消息:{}", msg);
     }

@@ -94,4 +94,40 @@ public class RabbitConfig {
 
     }
 
+    @Bean
+    public Queue demoTestQueue() {
+        return new Queue("demo-test");
+    }
+
+    @Bean
+    public TopicExchange demoTestTopicExchange() {
+        return new TopicExchange("demoTestTopic");
+    }
+
+    @Bean
+    public Binding demoTestBinding() {
+        return BindingBuilder.bind(demoTestQueue()).to(demoTestTopicExchange()).with("cn.com.test");
+
+    }
+
+
+    /******************************
+     * 用户相关
+     *******************************/
+    @Bean
+    public Queue addUserQueue() {
+        return new Queue("demo-user-add");
+    }
+
+    @Bean
+    public TopicExchange addUserTopicExchange() {
+        return new TopicExchange("addUserTopic");
+    }
+
+    @Bean
+    public Binding addUserBinding() {
+        return BindingBuilder.bind(addUserQueue()).to(addUserTopicExchange()).with("cn.com.user.add");
+
+    }
+
 }

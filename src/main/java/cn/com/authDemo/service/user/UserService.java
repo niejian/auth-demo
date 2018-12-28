@@ -16,6 +16,7 @@ public interface UserService {
      */
     void addUser(User user) throws Exception;
 
+
     User findUserByUserId(String userId) throws Exception;
 
     String login(String userName, String password) throws Exception;
