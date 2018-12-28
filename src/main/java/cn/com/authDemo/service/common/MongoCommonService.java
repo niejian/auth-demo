@@ -1,5 +1,10 @@
 package cn.com.authDemo.service.common;
 
+import net.sf.json.JSONObject;
+import org.springframework.data.mongodb.core.query.Query;
+
+import java.util.Map;
+
 /**
  * mongo相关的进一步封装的方法
  * 利用反射的方式获取到表实体上的注解从而获得对应的表字段
@@ -31,9 +36,10 @@ public interface MongoCommonService {
     /**
      * 根据入参实体更新对应表的信息
      * @param clazz
-     * @param dbName
+     * @param query
+     * @param updateFieldValMap 属性名、值键值对
      * @throws Exception
      */
-    void updateEntityBySelectived(Class<?> clazz, String dbName) throws Exception;
+    void updateEntityBySelectived(Class<?> clazz, Query query, Map<String, Object> updateFieldValMap ) throws Exception;
 
 }

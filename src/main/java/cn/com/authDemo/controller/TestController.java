@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 /**
@@ -37,5 +38,10 @@ public class TestController {
     @GetMapping(value = "/TopicSender")
     public void TopicSender() {
         topicSender.send2();
+    }
+
+    @GetMapping(value = "/getReqId")
+    public String getRequestId(HttpServletRequest request) {
+        return request.getRequestedSessionId();
     }
 }

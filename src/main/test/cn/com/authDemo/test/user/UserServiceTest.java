@@ -10,6 +10,8 @@ import cn.com.authDemo.service.common.MongoCommonService;
 import cn.com.authDemo.service.user.UserService;
 import cn.com.authDemo.util.SnowflakeIdWorker;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mongodb.core.query.Query;
+
 import org.apache.tomcat.util.security.MD5Encoder;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,12 +19,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.DigestUtils;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author niejian
@@ -61,12 +66,24 @@ public class UserServiceTest {
 
     @Ignore
     @Test
+    public void testUpdate() throws Exception{
+
+        Query query = new Query(Criteria.where("id").is("6703898366574592"));
+        query.addCriteria(Criteria.where("state").is(true));
+        Map<String, Object> map = new HashMap<>();
+        map.put("avatar", "http://imgsrc.baidu.com/forum/w%3D580%3B/sign=b440e70ac6ef76093c0b99971ee6a1cc/e1fe9925bc315c608c1c887880b1cb1348547798.jpg");
+        this.mongoCommonService.updateEntityBySelectived(User.class, query, map);
+
+    }
+
+    //@Ignore
+    @Test
     public void testFindUserByUserName() throws Exception{
         //String userName = "Mike";
-        String userName = "83632156835841";
+        String userName = "6703898366574592";
         User user = this.userService.findUserByUserId(userName);
         log.info("----------------------------------------");
-        log.info("查询结果：{}", user.toString());
+        log.info("查询结果：{}", user.getAvatar());
         log.info("----------------------------------------");
 
     }

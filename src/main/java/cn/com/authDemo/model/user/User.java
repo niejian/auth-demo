@@ -31,6 +31,8 @@ public class User {
     private boolean state;
     @Field("email")
     private String email;
+    @Field("avatar")
+    private String avatar;
 
 
 }

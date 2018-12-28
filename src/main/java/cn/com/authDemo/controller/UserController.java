@@ -5,6 +5,7 @@ import cn.com.authDemo.common.BaseResponseExt;
 import cn.com.authDemo.common.CommonFunction;
 import cn.com.authDemo.model.user.User;
 import cn.com.authDemo.service.user.UserService;
+import cn.com.authDemo.util.JwtTokenUtil;
 import cn.com.authDemo.util.SnowflakeIdWorker;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
@@ -41,6 +42,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @ResponseBody
     @PostMapping(value = "/login")
@@ -118,10 +121,9 @@ public class UserController {
         }
 
 
-        response.setIsSuccess(isSuccess);
-        response.setResponseCode(responseCode);
-        response.setResponseMsg(responseMsg);
-        baseResponseExt.setBaseResponse(response);
+        baseResponseExt.setIsSuccess(isSuccess);
+        baseResponseExt.setResponseCode(responseCode);
+        baseResponseExt.setResponseMsg(responseMsg);
         baseResponseExt.setData(token);
 
         CommonFunction.afterProcess(log, response);
@@ -129,6 +131,48 @@ public class UserController {
         return baseResponseExt;
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @ResponseBody
+    @PostMapping(value = "/getUserInfo")
+    public BaseResponseExt getUserInfo(HttpServletRequest request, @RequestBody JSONObject jsonObject) {
+        BaseResponseExt baseResponse = new BaseResponseExt();
+        CommonFunction.beforeProcess(log, jsonObject);
+        Boolean isSuccess = false;
+        String responseMsg = "请求失败";
+        Integer responseCode = -1;
+        User user = new User();
+
+        try {
+
+            String token = request.getHeader("Authorization");
+            if (!StringUtils.isEmpty(token)) {
+                //Bearer
+                token = token.substring(7);
+            }
+            String email = jwtTokenUtil.getUsernameFromToken(token);
+
+            if (!StringUtils.isEmpty(email)) {
+                user.setEmail(email);
+            }
+
+            user = this.userService.getUserByLoginAccount(email);
+
+            isSuccess = true;
+            responseCode = 0;
+            responseMsg = "请求成功";
+
+        } catch (Exception e) {
+            CommonFunction.genErrorMessage(log, e, jsonObject);
+
+        }
+
+        baseResponse.setIsSuccess(isSuccess);
+        baseResponse.setResponseCode(responseCode);
+        baseResponse.setResponseMsg(responseMsg);
+        baseResponse.setData(user);
+
+        return baseResponse;
+    }
     /**
      * 显示调用
      *获取所有权信息

@@ -9,7 +9,7 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class BaseResponseExt<T> {
-    private BaseResponse baseResponse;
+public class BaseResponseExt<T> extends BaseResponse{
+
     private T data;
 }

@@ -147,6 +147,23 @@ public class UserServiceImpl implements UserService {
         return users;
     }
 
+    @Override
+    public User getUserByLoginAccount(String loginAccount) throws Exception {
+        log.info("根据条件获取用户信息: {}", loginAccount);
+
+        Query query = new Query(Criteria.where("state").is(Boolean.TRUE));
+        if (!StringUtils.isEmpty(loginAccount)) {
+            query.addCriteria(Criteria.where("email").is(loginAccount));
+        }
+        List<User> users = this.mongoTemplate.find(query, User.class);
+        User user = null;
+        if (!CollectionUtils.isEmpty(users)) {
+            user = users.get(0);
+        }
+
+        return user;
+
+    }
 
     /**
      * 创建角色
@@ -205,5 +222,15 @@ public class UserServiceImpl implements UserService {
         Query query = new Query(Criteria.where("userId").is(userId));
         userRoles = mongoTemplate.find(query, UserRole.class);
         return userRoles;
+    }
+
+    /**
+     * 更新
+     *
+     * @param user
+     */
+    @Override
+    public void updateUserBySelectived(User user) {
+//this.mongoTemplate.updateMulti()
     }
 }

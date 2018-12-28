@@ -27,6 +27,8 @@ public interface UserService {
      */
     List<User> getUser(User user) throws Exception;
 
+    User getUserByLoginAccount(String loginAccount) throws Exception;
+
     /**
      * 创建角色
      * @param role
@@ -57,4 +59,9 @@ public interface UserService {
      */
     List<UserRole> getUserRoleByUserId(String userId) throws Exception;
 
+    /**
+     * 更新
+     * @param user
+     */
+    void updateUserBySelectived(User user);
 }

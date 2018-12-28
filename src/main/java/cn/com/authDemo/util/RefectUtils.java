@@ -1,11 +1,14 @@
 package cn.com.authDemo.util;
 
 import cn.com.authDemo.model.user.Menu;
+import cn.com.authDemo.model.user.User;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.query.Update;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,8 +43,16 @@ public class RefectUtils {
         return idFiled;
     }
 
-    public static void main(String[] args) throws Exception{
-        String menuId = getFieldIdAnnotation(Menu.class, "menuId");
-        System.out.println(menuId);
+    public static void  getUpdateFieldsByPo(Class clazz) {
+        Method[] declaredMethods = clazz.getDeclaredMethods();
+
     }
+
+    public static void main(String[] args) throws Exception{
+        User user = new User();
+        user.setEmail("sd");
+        getUpdateFieldsByPo(user.getClass());
+    }
+
+
 }
