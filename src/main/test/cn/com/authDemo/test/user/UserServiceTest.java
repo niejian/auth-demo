@@ -9,8 +9,12 @@ import cn.com.authDemo.model.user.UserRole;
 import cn.com.authDemo.service.common.MongoCommonService;
 import cn.com.authDemo.service.user.UserService;
 import cn.com.authDemo.util.SnowflakeIdWorker;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.impl.AMQImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.ReceiveAndReplyCallback;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import org.apache.tomcat.util.security.MD5Encoder;
@@ -48,8 +52,10 @@ public class UserServiceTest {
     private MongoCommonService mongoCommonService;
     @Autowired
     private MongoTemplate mongoTemplate;
+    //    @Autowired
+//    private AmqpTemplate amqpTemplate;
     @Autowired
-    private AmqpTemplate amqpTemplate;
+    private RabbitTemplate rabbitTemplate;
 
     @Ignore
     @Test
@@ -150,7 +156,7 @@ public class UserServiceTest {
      * 模拟并发从队列中取值
      * @throws Exception
      */
-    @Ignore
+    //@Ignore
     @Test
     public void testGetMsg() throws Exception{
         ExecutorService service = Executors.newCachedThreadPool(); //创建一个线程池
@@ -170,8 +176,13 @@ public class UserServiceTest {
                          */
                         beginCountDownLatch.await();
                         log.info("------->index:{}", index);
-                        String data = (String) amqpTemplate.receiveAndConvert("demo-test");
-                        log.info("==============>消息n内容：{}", data);
+//                        String data = (String) rabbitTemplate.receiveAndConvert("demo-test");
+//                        log.info("==============>消息n内容：{}", data);
+
+                        //客户端手动确认消息
+                        boolean ack = rabbitTemplate.receiveAndReply("demo-test", new Callback(), "demoTestTopic", "cn.com.test");
+
+                        log.info("==============>是否接受到消息：{}", ack);
 
                         countDownLatch.countDown();
                         index++;
@@ -190,5 +201,16 @@ public class UserServiceTest {
         //
         countDownLatch.await();
 
+    }
+
+    /**
+     *继承ReceiveAndReplyCallback ，客户端接收并相应消息
+     */
+    private static class Callback implements  ReceiveAndReplyCallback {
+        @Override
+        public Object handle(Object payload) {
+            log.info("====消息确认====，playload：{}", (String)payload);
+            return null;
+        }
     }
 }

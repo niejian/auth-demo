@@ -6,15 +6,19 @@ import cn.com.authDemo.mq.user.UserMQSender;
 import cn.com.authDemo.service.mq.RabbitMQComponent;
 import cn.com.authDemo.service.mq.TopicSender;
 import cn.com.authDemo.util.SnowflakeIdWorker;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.IdGenerator;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
@@ -22,9 +26,10 @@ import java.util.Date;
  * @author: nj
  * @date: 2018/12/19:下午5:10
  */
+@Slf4j
 @RestController
 @RequestMapping("/test")
-public class TestController {
+public class TestController implements  RabbitTemplate.ReturnCallback {
 
     @Autowired
     private RabbitMQComponent rabbitMQComponent;
@@ -34,7 +39,14 @@ public class TestController {
     private UserMQSender userMQSender;
     @Autowired
     private AmqpTemplate amqpTemplate;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
+    @PostConstruct
+    public void init() {
+        this.rabbitTemplate.setMandatory(true);
+        this.rabbitTemplate.setReturnCallback(this);
+    }
     @RequestMapping("/getTime")
     public Long test() {
         return System.currentTimeMillis();
@@ -80,7 +92,32 @@ public class TestController {
     @GetMapping(value = "/testDistribute")
     public void testDistribute() throws Exception{
         for (int i = 1; i < 10; i++) {
-            this.userMQSender.sendUserMQ("demoTestTopic", "cn.com.test", i + "");
+            User user = new User();
+
+
+            user.setId(i + "");
+            user.setEmail(i + "@163.com");
+            user.setUserName("Jack" + i);
+            user.setState(true);
+            String pwd = DigestUtils.md5DigestAsHex("12345678".getBytes());
+
+            user.setPwd(passwordEncoder.encode(pwd));
+            user.setUserCode("123" + i);
+            JSONObject jsonObject = JSONObject.fromObject(user);
+
+            //this.userMQSender.sendUserMQ("demoTestTopic", "cn.com.test", jsonObject.toString());
+
+            this.rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
+                if (!ack) {
+                    log.error("消息发送失败,{}, {}" , cause , correlationData.toString());
+                } else {
+                    log.info("消息发送成功 ");
+                }
+
+
+            });
+
+            this.userMQSender.sendUserMQ("demoTestTopic", "cn.com.test", jsonObject.toString());
 
         }
 
@@ -103,5 +140,20 @@ public class TestController {
 
         return baseResponseExt;
 
+    }
+
+    /**
+     * Returned message callback.
+     *
+     * @param message    the returned message.
+     * @param replyCode  the reply code.
+     * @param replyText  the reply text.
+     * @param exchange   the exchange.
+     * @param routingKey the routing key.
+     */
+    @Override
+    public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
+        log.info("发送成功，消息内容：{}, 返回编码：{}, replyText:{}, exchange:{}, routingKey:{}",
+                new String(message.getBody()), replyCode, replyText, exchange, routingKey);
     }
 }

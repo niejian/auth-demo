@@ -8,12 +8,12 @@ public interface RedisService {
 
     /**
      * 设置缓存
-     * @param key
-     * @param value
-     * @param timeout
+     * @param key 键
+     * @param value 值
+     * @param timeout 超时时间， 毫秒
      * @throws Exception
      */
-    void setValue(String key, Object value, long timeout) throws Exception;
+    void setValue(String key, Object value, Long timeout) throws Exception;
 
 
     Object getValue(String key, Class returnClazz) throws Exception;

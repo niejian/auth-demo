@@ -27,14 +27,14 @@ public class RedisSentinelTest {
     @Autowired
     private RedisService redisService;
 
-    //@Ignore
+    @Ignore
     @Test
     public void testSetVal() throws Exception{
         List<String> a = new ArrayList<>();
         a.add("1");
         a.add("1");
         a.add("1");
-       redisService.setValue("adc", a, 10);
+       redisService.setValue("adc1", a, 10000L);
     }
 
     @Ignore
